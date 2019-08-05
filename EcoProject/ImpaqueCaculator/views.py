@@ -13,9 +13,19 @@ def ProfileCreateView(request):
     if request.method == 'POST':
         form = Co2ProductutionForm(request.POST)
         if form.is_valid():
+            # create a empty profile
             profile = Co2ProductionProfile()
+
+            # link the profile to the user
             profile.user = request.user
+
+            # add directly ask field to the profile
+            profile.is_diesel = form.cleaned_data['utilise_du_diasel']
             profile.emition_in_one_day = form.cleaned_data['emition_in_one_day']
+            profile.nomber_of_km_daylie = form.declared_fields['nombre_de_km_parcouru_en_une_journée']
+
+            # add inderecly ask field or field that nead forther caculation
+            # profile.litre_by_km =
             profile.save()
             return HttpResponseRedirect('/testd/')
 
@@ -26,7 +36,7 @@ def ProfileCreateView(request):
 
     # if he do not have one he is send to form to creat one
         except:
-            form = Co2ProductutionForm
+            form = Co2ProductutionForm()
             return render(request, 'ImpaqueCaculator/create.html', {'form': form})
 
         # oterwise we get him to see his impaque

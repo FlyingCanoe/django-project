@@ -3,4 +3,6 @@ from django import forms
 
 
 class Co2ProductutionForm(forms.Form):
-    emition_in_one_day = forms.IntegerField()
+    litre_au_100_km = forms.FloatField()
+    nombre_de_km_parcouru_en_une_journée = forms.FloatField()
+    utilise_du_diasel = forms.BooleanField()
