@@ -15,12 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic.base import TemplateView
+from django.views.generic import TemplateView
+
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('ImpaqueCaculator.urls')),
     path('accounts/', include('accounts.urls')),
+
+    # django namespace
     path('accounts/', include('django.contrib.auth.urls')),
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+
+    path('', views.HomeView.as_view(), name='home'),
+    path('mon_impaque', views.impaque_detail_view, name='DetailView'),
+    path('caculateur_impaque', views.impaque_create_view, name='CreateView'),
 ]

@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '9k_oh664c2wypgdwl1(i6te$fqy44)r4i@+(gjf+14m&32*z8x'
+SECRET_KEY = 'h@2h3gq7o$n9$*#1^z8gsb$7=*pf%#&x3+cci&hd-=nzg=l-#x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,9 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # my app
+    #login app
     'accounts.apps.AccountsConfig',
-    'ImpaqueCaculator.apps.ImpaquecaculatorConfig'
 ]
 
 MIDDLEWARE = [
@@ -70,8 +69,6 @@ TEMPLATES = [
         },
     },
 ]
-
-STATIC_ROOT = [os.path.join(BASE_DIR, 'static')]
 
 WSGI_APPLICATION = 'EcoProject.wsgi.application'
 
@@ -125,5 +122,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+#login redirect configuration
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'

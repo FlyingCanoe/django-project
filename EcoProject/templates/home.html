@@ -1,19 +1,14 @@
 {% extends 'base.html' %}
-{% load static %}
 
 {% block head %}
 <title>home</title>
-<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
 {% endblock %}
 
 {% block content %}
 {% if user.is_authenticated %}
-Hi {{ user.username }}!
-<p><a href="{% url 'logout' %}">logout</a></p>
+  Hi {{ user.username }}!
 {% else %}
-<p>You are not logged in</p>
-<a href="{% url 'login' %}">login</a>
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
 {% endif %}
-<p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Est quam non ipsa provident ullam corrupti dolore error
-    cum! Fuga, quaerat?</p>
 {% endblock %}
