@@ -8,7 +8,7 @@
             "name": "Python: Django",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/EcoProject/manage.py",
+            "program": "${workspaceFolder}/EcoProject2/manage.py",
             "args": [
                 "runserver",
                 "--noreload"
