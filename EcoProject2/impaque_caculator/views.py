@@ -7,7 +7,9 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 
 from .forms import ImpaqueCreateForm
-from .models import Co2EmisonProfile
+from .models import Co2EmisonProfile, Engagement
+from django.views.generic import CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 @login_required
@@ -20,7 +22,11 @@ def impaque_detail_view(request):
         return HttpResponseRedirect(reverse('CreateView'))
 
     profile = Co2EmisonProfile.objects.get(user=request.user)
-    context = {'emison_metric': profile.co2_emission_metric}
+    context = {
+        'consumption_metric': profile.consumption_metric,
+        'is_diesel': profile.is_diesel
+    }
+
     return render(request, 'detail.html', context=context)
 
 
@@ -31,38 +37,59 @@ def impaque_create_view(request):
     # If this is a POST request then process the Form data
     if request.method == 'POST':
 
-        # if the user allredy as a profile we redirect him to see is profile
-        try:
-            Co2EmisonProfile.objects.get(user=request.user)
-        except:
-             # Create a form instance and populate it with data from the request
-            form = ImpaqueCreateForm(request.POST)
+        # Create a form instance and populate it with data from the request
+        form = ImpaqueCreateForm(request.POST)
 
-            if form.is_valid():
-                user = request.user
+        if form.is_valid():
+            user = request.user
 
-                profile = Co2EmisonProfile()
-                profile.is_diesel = form.cleaned_data['is_diesel']
-                profile.consumption_metric = form.cleaned_data['nombre_de_litre_au_100_km']
-                profile.distance_travele = form.cleaned_data['nombre_de_km_parcourue_par_jour']*30
-                profile.user = user
-                profile.save()
-                profile.cuculect_emison()
+            profile = Co2EmisonProfile()
+            profile.consumption_metric = form.cleaned_data['consumption_metric']
+            profile.user = user
+            profile.save()
 
-                return HttpResponseRedirect(reverse('DetailView'))
+            return HttpResponseRedirect(reverse('DetailView'))
 
         else:
             return HttpResponseRedirect(reverse('DetailView'))
 
     # If this is a GET (or any other method) create the default form.
     else:
-        form = ImpaqueCreateForm()
-        context = {'form': form}
-        return render(request, 'create.html', context)
+        # if the user allredy as a profile we redirect him to see is profile
+        try:
+            Co2EmisonProfile.objects.get(user=request.user)
+        except:
+            form = ImpaqueCreateForm()
+            context = {'form': form}
+            return render(request, 'create.html', context)
+        else:
+            return HttpResponseRedirect(reverse('DetailView'))
+
+
+@login_required
+def engagement_list_view(request):
+    profile = Co2EmisonProfile.objects.get(user=request.user)
+    engament_list = Engagement.objects.filter(profile=profile)
+    context = {'engament_list': engament_list}
+    return render(request, 'list.html', context)
+
+
+class EngamintCreateView(LoginRequiredMixin, CreateView):
+    model = Engagement
+    fields = ['duration', 'distance']
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+
+        # get the user profile
+        user = self.request.user
+        profile = Co2EmisonProfile.objects.get(user=user)
+
+        obj.profile = profile
+        obj.save()
+        return HttpResponseRedirect(reverse('EngementListView'))
 
 
 def home(request):
-    sum = Co2EmisonProfile.objects.aggregate(Sum('co2_emission_metric'))
-
-    context = {'sum': sum['co2_emission_metric__sum']}
+    context = {}
     return render(request, 'home.html', context)

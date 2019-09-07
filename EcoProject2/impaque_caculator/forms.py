@@ -1,28 +1,27 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from .models import Co2EmisonProfile
 
 
 class ImpaqueCreateForm(forms.Form):
 
-    nombre_de_litre_au_100_km = forms.FloatField()
-    nombre_de_km_parcourue_par_jour = forms.FloatField()
-    is_diesel = forms.BooleanField(
-        required=False, label='est que votre vecule utilise du diesel')
+    consumption_metric = forms.FloatField(
+        label='nombre de litre au 100km'
+    )
+    combustible = forms.ChoiceField(
+        choices=Co2EmisonProfile.COMBUSTIBLE_CHOICES, help_text='type de combustible'
+    )
 
-    def clean_nombre_de_litre_au_100_km(self):
-        data = self.cleaned_data['nombre_de_litre_au_100_km']
-
-        # check if the consomation metric is positif
-        if data < 0:
-            raise ValidationError(_('entrer des valeur positif'))
-
-        return data
-
-    def clean_nombre_de_km_parcourue_par_jour(self):
-        data = self.cleaned_data['nombre_de_km_parcourue_par_jour']
+    def clean_consumption_metric(self):
+        data = self.cleaned_data['consumption_metric']
 
         # check if the consomation metric is positif
         if data < 0:
             raise ValidationError(_('entrer des valeur positif'))
 
         return data
+
+
+class EngamentCreateForm(forms.Form):
+    duration = forms.IntegerField()
+    distance = forms.IntegerField()

@@ -1,5 +1,23 @@
-<head>
-    <title> mon profile d'emison de co2</title>
-</head>
+{% extends 'base.html' %}
 
-<p> {{ emison_metric }}kg de co2 emite par mois</p>
+{% block head %}
+<title> mon profile d'emison de co2</title>
+{% endblock %}
+
+{% block content %}
+<h2> le profile d'emison de co2 de voutre vechule</h2>
+<div>
+    <p>consomation de carburen {{consumption_metric}}L/100km</p>
+</div>
+<div>
+    <p>type de carburen: {% if is_diesel == True %}
+    diesel
+    {% else %}
+    essence
+    {% endif %}
+    </p>
+</div>
+
+   <a href="{% url 'EngementListView' %}"> mes engament</a>
+
+{% endblock %}
