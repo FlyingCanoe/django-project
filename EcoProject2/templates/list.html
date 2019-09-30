@@ -2,9 +2,9 @@
 
 {% block content %}
 <ul>
-{% for engement in engament_list  %}
-    <li>{{engement.duration}} jour, {{engement.distance}}km</li>
-{% endfor %}
+    {% for engement in engament_list  %}
+    <li>{{engement.duration}} jour, {{engement.distance}}km, {{engement.emison_metric}} kg de co2</li>
+    {% endfor %}
 </ul>
 {# if there no engemant in engament_list #}
 {% if not engament_list  %}

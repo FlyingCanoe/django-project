@@ -6,9 +6,9 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 
-from .forms import ImpaqueCreateForm
-from .models import Co2EmisonProfile, Engagement
-from django.views.generic import CreateView
+from .forms import ImpaqueCreateForm, EngamentCreateForm
+from .models import Co2EmisonProfile, Engagement, GlobalEmisonMetric
+from django.views.generic import CreateView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
@@ -77,19 +77,17 @@ def engagement_list_view(request):
 class EngamintCreateView(LoginRequiredMixin, CreateView):
     model = Engagement
     fields = ['duration', 'distance']
+    template_name = 'impaque_caculator/engagement_form.html'
 
     def form_valid(self, form):
         obj = form.save(commit=False)
-
-        # get the user profile
-        user = self.request.user
-        profile = Co2EmisonProfile.objects.get(user=user)
-
-        obj.profile = profile
+        obj.profile = Co2EmisonProfile.objects.get(user=self.request.user)
+        obj.cuculet_emison()
         obj.save()
         return HttpResponseRedirect(reverse('EngementListView'))
 
 
 def home(request):
-    context = {}
+    globalsum = GlobalEmisonMetric.objects.get(name='global')
+    context = {'sum': globalsum.emison_metric}
     return render(request, 'home.html', context)

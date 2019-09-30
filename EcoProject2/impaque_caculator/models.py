@@ -43,7 +43,39 @@ class Engagement(models.Model):
         help_text="nombre de km parcourue durent l'engament"
     )
 
-    emison_metric = models.IntegerField(blank=True, null=True)
+    emison_metric = models.IntegerField()
 
     def cuculet_emison(self):
-        pass
+        if Co2EmisonProfile.is_diesel == 'ES':
+            tau_de_conversion = 1
+        else:
+            tau_de_conversion = 2
+
+        self.emison_metric = 0
+
+        self.emison_metric = self.profile.consumption_metric * \
+            tau_de_conversion * self.distance
+        self.save
+
+        try:
+            globalvar = GlobalEmisonMetric.objects.get(name='global')
+        except:
+            obj = GlobalEmisonMetric(
+                name='global',
+                emison_metric=0,
+            )
+            obj.save
+            globalvar = GlobalEmisonMetric.objects.get(name='global')
+        finally:
+            print(globalvar.emison_metric)
+            globalvar.add(self.emison_metric)
+            globalvar.save
+            print(globalvar.emison_metric)
+
+
+class GlobalEmisonMetric(models.Model):
+    name = models.TextField()
+    emison_metric = models.IntegerField()
+
+    def add(self, add):
+        self.emison_metric += add

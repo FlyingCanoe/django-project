@@ -25,3 +25,12 @@ class ImpaqueCreateForm(forms.Form):
 class EngamentCreateForm(forms.Form):
     duration = forms.IntegerField()
     distance = forms.IntegerField()
+
+    def save(profile):
+        Co2EmisonProfile(
+            profile=profile,
+            duration=duration,
+            distance=distance,
+
+        )
+        profile = profile
