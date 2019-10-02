@@ -1,0 +1,1 @@
+web: gunicorn EcoProject2.wsgi --log-file -
