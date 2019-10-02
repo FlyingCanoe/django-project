@@ -8,6 +8,7 @@ rope = "*"
 pylint = "*"
 autopep8 = "*"
 pep8 = "*"
+django-heroku
 
 [packages]
 django = "*"
